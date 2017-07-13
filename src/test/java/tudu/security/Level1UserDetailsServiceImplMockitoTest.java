@@ -6,21 +6,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
-import tudu.domain.Role;
-import tudu.domain.RolesEnum;
 import tudu.domain.User;
 import tudu.service.UserService;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 public class Level1UserDetailsServiceImplMockitoTest {
 
     @Mock
-    UserService userService;
+    private UserService userService;
     @InjectMocks
-    UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl();
+    private UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl();
 
     @Before
     public void before() {
@@ -35,6 +32,12 @@ public class Level1UserDetailsServiceImplMockitoTest {
    */
     @Test
     public void userDetails_should_correspond_to_the_user_found() {
-
+        User user = new User();
+        user.setLogin("test_user");
+        user.setPassword("password");
+        when(userService.findUser("test_user")).thenReturn(user);
+        UserDetails foundUser = userDetailsService.loadUserByUsername("test_user");
+        assertEquals(foundUser.getUsername(), user.getLogin());
+        assertEquals(foundUser.getPassword(), user.getPassword());
     }
 }
