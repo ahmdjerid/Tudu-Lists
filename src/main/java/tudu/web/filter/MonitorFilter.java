@@ -3,7 +3,6 @@ package tudu.web.filter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.util.StopWatch;
 
@@ -17,7 +16,9 @@ import java.io.IOException;
 
 public class MonitorFilter implements Filter {
 
-    private final Log log = LogFactory.getLog("monitoring");
+    private Log log ;
+
+    private SecurityHelper securityHelper;
 
     private boolean isMonitored = false;
 
@@ -25,6 +26,7 @@ public class MonitorFilter implements Filter {
         if (log.isDebugEnabled()) {
             this.isMonitored = true;
         }
+        this.log = LogFactory.getLog("monitoring");
     }
 
 
@@ -51,7 +53,7 @@ public class MonitorFilter implements Filter {
             sb.append(time);
             sb.append(" | ");
             String userName;
-            Authentication authent = SecurityContextHolder.getContext().getAuthentication();
+            Authentication authent = securityHelper.getAuthentication();
             if (authent != null) {
                 Object principal = authent.getPrincipal();
                 if (principal instanceof String) {
@@ -73,5 +75,10 @@ public class MonitorFilter implements Filter {
 
     public void destroy() {
     }
+
+    public void setMonitored(boolean monitored) {
+        isMonitored = monitored;
+    }
+
 
 }
