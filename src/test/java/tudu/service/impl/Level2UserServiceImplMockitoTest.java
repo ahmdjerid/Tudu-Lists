@@ -95,12 +95,18 @@ public class Level2UserServiceImplMockitoTest {
     */
     // a verifier
     @Test(expected = UserAlreadyExistsException.class)
-    public void when_the_login_already_exist_then_persist_never_called_1() throws UserAlreadyExistsException {
+    public void when_the_login_already_exist_then_persist_never_called_1() throws Exception {
         //given
         given(entityManager.find(User.class, user.getLogin())).willReturn(user);
         //when
-        userService.createUser(user);
-        verify(entityManager, never()).persist(user);
+        try {
+            userService.createUser(user);
+
+        } catch (UserAlreadyExistsException e) {
+            //then
+            verify(entityManager, never()).persist(user);
+            throw e;
+        }
 
 
     }
